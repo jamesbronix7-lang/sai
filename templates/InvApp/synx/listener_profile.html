@@ -1,0 +1,70 @@
+{% extends "InvApp/synx/base.html" %}
+{% load static %}
+{% block title %}{{ listener.name }} · Room profile · SYNX{% endblock %}
+{% block content %}
+<section class="listener-profile-page reveal">
+    <div class="listener-profile-heading">
+        <div>
+            <p class="eyebrow"><span class="eyebrow-line"></span> LISTENING ROOM MEMBER</p>
+            <h1>Listener <em>card.</em></h1>
+        </div>
+        <a class="button button-quiet" href="{% url 'dashboard' %}#room-chat-replay">Back to room chat <span aria-hidden="true">↗</span></a>
+    </div>
+
+    <article class="listener-profile-card">
+        <div class="listener-profile-art" style="--foil-color: {{ listener.foil }};">
+            <span class="listener-profile-coordinate">SYNX / MEMBER {{ listener_count|stringformat:"02d" }}</span>
+            <div class="holo-card" data-preset="{{ listener.preset }}">
+                <img src="{% static 'app_name/img/pfp/'|add:listener.image %}" alt="{{ listener.name }} profile picture">
+                <span class="holo-card-foil" aria-hidden="true"></span>
+                <span class="holo-card-frame" aria-hidden="true">SYNX <span>✳</span> {{ listener.preset|upper }}</span>
+                <span class="holo-card-edition" aria-hidden="true">NO. {{ listener_count|stringformat:"02d" }}</span>
+                <span class="holo-card-name" aria-hidden="true">{{ listener.name }}</span>
+            </div>
+            <span class="listener-profile-room">{{ room.room_name|upper }} / HOLO SERIES</span>
+        </div>
+        <div class="listener-profile-main">
+            <p class="eyebrow">HERE WITH THE ROOM</p>
+            <h2>{{ listener.name }}</h2>
+            <p class="listener-profile-caption">A familiar voice in {{ room.room_name }}.</p>
+            <div class="listener-profile-status">
+                <span class="listener-status-dot"></span>
+                <span>IN THE LISTENING ROOM</span>
+            </div>
+            <div class="listener-holo-preset">
+                <span>HOLO FINISH</span>
+                <strong>{{ listener.preset_label }}</strong>
+            </div>
+            <section class="listener-quote">
+                <span class="listener-quote-label">LATEST ROOM MESSAGE</span>
+                <p>{{ listener.message }}</p>
+            </section>
+            <section class="listener-music-profile" aria-label="{{ listener.name }}'s music profile">
+                <p class="eyebrow">SIGNATURE TRACK · {{ listener.music_style }}</p>
+                <h3>{{ listener.favorite_song }}</h3>
+                <p class="listener-favorite-artist">{{ listener.favorite_artist }}</p>
+                <p class="listener-music-vibe">{{ listener.music_vibe }}</p>
+                <div class="listener-recommendations">
+                    <span class="listener-quote-label">ALSO ON REPEAT</span>
+                    <ul>
+                        {% for song in listener.recommendations %}
+                            <li>{{ song }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </section>
+            <div class="listener-profile-actions">
+                <a class="button button-quiet listener-previous-button" href="{% url 'listener_profile' previous_listener.slug %}" aria-label="Previous listener profile: {{ previous_listener.name }}">
+                    <span aria-hidden="true">←</span> Previous: {{ previous_listener.name }}
+                </a>
+                <a class="button button-primary" href="{% url 'dashboard' %}#room-chat-replay">View room chat <span aria-hidden="true">↗</span></a>
+                <a class="button button-quiet" href="{% url 'dashboard' %}">Return to room</a>
+                <a class="button button-quiet listener-next-button" href="{% url 'listener_profile' next_listener.slug %}" aria-label="Next listener profile: {{ next_listener.name }}">
+                    Next: {{ next_listener.name }} <span aria-hidden="true">→</span>
+                </a>
+            </div>
+        </div>
+    </article>
+</section>
+{% endblock %}
+{% block scripts %}<script src="{% static 'app_name/js/listener-profile.js' %}"></script>{% endblock %}

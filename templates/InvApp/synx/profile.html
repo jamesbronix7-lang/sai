@@ -1,0 +1,39 @@
+{% extends "InvApp/synx/base.html" %}
+{% block title %}My music profile · SYNX{% endblock %}
+{% block content %}
+<section class="page-heading reveal">
+    <div><p class="eyebrow">THE PERSON BEHIND THE PLAYLIST</p><h1>Your music <em>identity.</em></h1><p class="intro-copy">A portrait in sounds, shaped by the things you return to.</p></div>
+</section>
+<div class="profile-layout">
+    <section class="profile-portrait reveal">
+        <div class="portrait-disc" aria-hidden="true"><span>♪</span></div>
+        <p class="eyebrow">LISTENER NO. {{ record_count|stringformat:"03d" }}</p>
+        <h2>{{ profile.display_name|default:"A listener in progress" }}</h2>
+        <p class="profile-personality">{{ profile.personality|default:"The Midnight Wanderer" }}</p>
+        <p class="profile-description">{% if profile.description %}{{ profile.description }}{% else %}Your sound is still taking shape. Add the details that make this profile feel like you.{% endif %}</p>
+        <div class="profile-facts">
+            <div><span>FAVORITE ERA</span><strong>{{ profile.favorite_era|default:"Still discovering" }}</strong></div>
+            <div><span>TRACKS SAVED</span><strong>{{ record_count }}</strong></div>
+        </div>
+        <div class="profile-preferences">
+            <div><span class="preference-label">FAVORITE ARTISTS</span><div class="profile-pills">{% for artist in favorite_artists %}<span>{{ artist }}</span>{% empty %}<span>Add artists →</span>{% endfor %}</div></div>
+            <div><span class="preference-label">FAVORITE GENRES</span><div class="profile-pills">{% for genre in favorite_genres %}<span>{{ genre }}</span>{% empty %}<span>Add genres →</span>{% endfor %}</div></div>
+            <div><span class="preference-label">PREFERRED MOODS</span><div class="profile-pills">{% for mood in favorite_moods %}<span>{{ mood }}</span>{% empty %}<span>Add moods →</span>{% endfor %}</div></div>
+        </div>
+    </section>
+    <form method="post" class="editor-panel profile-editor reveal">
+        {% csrf_token %}
+        <div class="section-heading compact"><div><p class="eyebrow">TUNE YOUR DETAILS</p><h2>Edit your profile</h2></div></div>
+        {% if form.non_field_errors %}<div class="form-errors" role="alert">{{ form.non_field_errors }}</div>{% endif %}
+        {% for field in form %}
+        <div class="field-wrap">
+            <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+            {{ field }}
+            {% if field.help_text %}<small class="field-help">{{ field.help_text }}</small>{% endif %}
+            {% for error in field.errors %}<small class="field-error" role="alert">{{ error }}</small>{% endfor %}
+        </div>
+        {% endfor %}
+        <div class="form-actions"><button class="button button-primary" type="submit">Save identity <span aria-hidden="true">↗</span></button></div>
+    </form>
+</div>
+{% endblock %}

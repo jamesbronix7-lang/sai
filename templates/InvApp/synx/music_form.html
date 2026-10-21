@@ -1,0 +1,31 @@
+{% extends "InvApp/synx/base.html" %}
+{% load static %}
+{% block title %}{% if is_edit %}Edit track{% else %}Add music{% endif %} · SYNX{% endblock %}
+{% block content %}
+<section class="page-heading form-heading reveal">
+    <div><p class="eyebrow">{% if is_edit %}REFINE THE RECORD{% else %}ADD TO THE ARCHIVE{% endif %}</p><h1>{% if is_edit %}Edit this <em>track.</em>{% else %}Save a <em>feeling.</em>{% endif %}</h1><p class="intro-copy">The details matter. Tell us what makes this one yours.</p></div>
+</section>
+<div class="form-layout">
+    <form method="post" id="music-create-form" class="editor-panel reveal" {% if not is_edit %}data-ticket-form{% endif %}>
+        {% csrf_token %}
+        {% if form.non_field_errors %}<div class="form-errors" role="alert">{{ form.non_field_errors }}</div>{% endif %}
+        <div class="form-grid">
+        {% for field in form %}
+            <div class="field-wrap {% if field.name == 'description' %}field-wide{% endif %}">
+                <label for="{{ field.id_for_label }}">{{ field.label }}{% if field.field.required %}<span class="required-mark" aria-hidden="true">*</span>{% endif %}</label>
+                {{ field }}
+                {% if field.help_text %}<small class="field-help">{{ field.help_text }}</small>{% endif %}
+                {% for error in field.errors %}<small class="field-error" role="alert">{{ error }}</small>{% endfor %}
+            </div>
+        {% endfor %}
+        </div>
+        <div class="form-actions"><a class="button button-quiet" href="{% if is_edit %}{% url 'music_detail' music.pk %}{% else %}{% url 'music_library' %}{% endif %}">Cancel</a>{% if is_edit %}<button class="button button-primary" type="submit">Save changes <span aria-hidden="true">↗</span></button>{% endif %}</div>
+    </form>
+    {% if is_edit %}
+        <aside class="form-aside reveal"><span class="aside-note">A NOTE TO SELF</span><span class="aside-symbol" aria-hidden="true">♫</span><h2>Not just a song.<br>A whole moment.</h2><p>Capture the feeling, the season, the version of you that first pressed play.</p><span class="aside-rule"></span><span class="aside-caption">SYNX · SOUND ARCHIVE</span></aside>
+    {% else %}
+        {% include "InvApp/synx/includes/tear_ticket.html" with ticket_form_id="music-create-form" ticket_title_field="id_song_title" ticket_details_field="id_artist_name" ticket_note_field="id_genre" ticket_eyebrow="NEW SHELF ARRIVAL" ticket_default_title="Your next favorite" ticket_default_details="Artist / band" ticket_default_note="Add a genre to set the tone." ticket_number="NO. 002" ticket_button_label="Tear & add to room" %}
+    {% endif %}
+</div>
+{% endblock %}
+{% block scripts %}{% if not is_edit %}<script src="{% static 'app_name/js/tear-ticket.js' %}"></script>{% endif %}{% endblock %}

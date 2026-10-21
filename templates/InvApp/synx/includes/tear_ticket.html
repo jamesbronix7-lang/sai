@@ -1,0 +1,30 @@
+<aside class="tear-ticket-panel"
+       data-ticket-preview
+       data-title-field="{{ ticket_title_field }}"
+       data-details-field="{{ ticket_details_field }}"
+       data-note-field="{{ ticket_note_field|default:'' }}"
+       data-ticket-number="{{ ticket_number }}">
+    <div class="tear-ticket" aria-live="polite">
+        <div class="tear-ticket-left">
+            <div class="tear-ticket-copy">
+                <span class="tear-ticket-kicker">SYNX / ADMIT ONE</span>
+                <span class="tear-ticket-eyebrow">{{ ticket_eyebrow }}</span>
+                <strong class="tear-ticket-title" data-ticket-title>{{ ticket_default_title }}</strong>
+                <span class="tear-ticket-details" data-ticket-details>{{ ticket_default_details }}</span>
+                <p class="tear-ticket-note" data-ticket-note>{{ ticket_default_note }}</p>
+            </div>
+            <div class="tear-ticket-record" aria-hidden="true"><span></span></div>
+        </div>
+        <button class="tear-ticket-stub"
+                type="submit"
+                form="{{ ticket_form_id }}"
+                data-ticket-tear
+                aria-label="{{ ticket_button_label }}">
+            <span class="tear-ticket-stub-label">ONE WAY IN</span>
+            <strong>{{ ticket_button_label }}</strong>
+            <span class="tear-ticket-number">{{ ticket_number }}</span>
+            <span class="tear-ticket-barcode" aria-hidden="true"></span>
+        </button>
+    </div>
+    <p class="tear-ticket-hint">Your details are on the ticket. Tear off its right side to continue.</p>
+</aside>

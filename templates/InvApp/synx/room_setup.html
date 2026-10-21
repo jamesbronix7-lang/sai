@@ -1,0 +1,44 @@
+{% extends "InvApp/synx/base.html" %}
+{% load static %}
+{% block title %}{% if is_edit %}Host settings{% else %}Create your listening room{% endif %} · SYNX{% endblock %}
+{% block content %}
+<section class="host-setup pocho-host-setup">
+    <div class="host-intro reveal">
+        <p class="eyebrow">YOUR PLACE · YOUR RECORDS · YOUR RULES</p>
+        <h1>{% if is_edit %}The room is <em>yours.</em>{% else %}Make yourself<br><em>a listening room.</em>{% endif %}</h1>
+        <p class="intro-copy">{% if is_edit %}As the host, you can change the room’s name and set the mood whenever you like.{% else %}You’re the host here. Give your room a name, set the atmosphere, and start putting the songs you love on the shelf.{% endif %}</p>
+        {% if is_edit %}<div class="host-badge"><span aria-hidden="true">✦</span> HOSTED BY {{ request.user.username|upper }} <span>·</span> OPENED {{ room.created_at|date:"M Y"|upper }}</div>{% endif %}
+    </div>
+    <div class="host-setup-grid">
+        <form method="post" id="room-setup-form" class="editor-panel host-room-form reveal" {% if not is_edit %}data-ticket-form{% endif %}>
+            {% csrf_token %}
+            {% if form.non_field_errors %}<div class="form-errors" role="alert">{{ form.non_field_errors }}</div>{% endif %}
+            {% for field in form %}
+            <div class="field-wrap">
+                <label for="{{ field.id_for_label }}">{{ field.label }}{% if field.field.required %}<span class="required-mark" aria-hidden="true">*</span>{% endif %}</label>
+                {{ field }}
+                {% if field.help_text %}<small class="field-help">{{ field.help_text }}</small>{% endif %}
+                {% for error in field.errors %}<small class="field-error" role="alert">{{ error }}</small>{% endfor %}
+            </div>
+            {% endfor %}
+            <div class="form-actions">
+                {% if is_edit %}<a class="button button-quiet" href="{% url 'dashboard' %}">Back to room</a>{% endif %}
+                {% if is_edit %}<button class="button button-primary" type="submit">Save room settings <span aria-hidden="true">↗</span></button>{% endif %}
+            </div>
+        </form>
+        {% if is_edit %}
+            <aside class="host-preview reveal">
+                <div class="host-preview-window"><span></span></div>
+                <div class="host-preview-record"><span>♪</span></div>
+                <p class="eyebrow">HOST’S NOTE</p>
+                <h2>The best rooms<br>have a point of view.</h2>
+                <p>Your room is private to your account. Your saved music follows you here, and you’re always in control of your collection.</p>
+                <span class="preview-coordinate">SYNX / HOSTED LISTENING SPACE</span>
+            </aside>
+        {% else %}
+            {% include "InvApp/synx/includes/tear_ticket.html" with ticket_form_id="room-setup-form" ticket_title_field="id_room_name" ticket_details_field="id_atmosphere" ticket_note_field="id_description" ticket_eyebrow="YOUR LISTENING ROOM" ticket_default_title="Name your room" ticket_default_details="Set the atmosphere" ticket_default_note="A place for the songs you keep close." ticket_number="NO. 001" ticket_button_label="Tear & open room" %}
+        {% endif %}
+    </div>
+</section>
+{% endblock %}
+{% block scripts %}<script src="{% static 'app_name/js/tear-ticket.js' %}"></script>{% endblock %}

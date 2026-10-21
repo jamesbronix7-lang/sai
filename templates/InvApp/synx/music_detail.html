@@ -1,0 +1,18 @@
+{% extends "InvApp/synx/base.html" %}
+{% block title %}{{ music.song_title }} · SYNX{% endblock %}
+{% block content %}
+<nav class="crumbs reveal" aria-label="Breadcrumb"><a href="{% url 'music_library' %}">Music library</a><span aria-hidden="true">/</span><span>{{ music.song_title }}</span></nav>
+<article class="detail-card reveal">
+    <div class="detail-art"><div class="vinyl-record" aria-label="Decorative vinyl record"><span class="vinyl-label">S<br><small>SYNX</small></span></div><span class="art-caption">SIDE A · YOUR COLLECTION</span></div>
+    <div class="detail-copy">
+        <p class="eyebrow">TRACK NO. {{ music.pk|stringformat:"04d" }}</p>
+        <h1>{{ music.song_title }}</h1>
+        <p class="detail-artist">{{ music.artist_name }}</p>
+        <div class="detail-rating" aria-label="{{ music.rating }} out of 5">{% for _ in "12345" %}{% if forloop.counter <= music.rating %}★{% else %}<span>☆</span>{% endif %}{% endfor %}<small>{{ music.rating }} / 5</small></div>
+        <div class="detail-tags"><span>{{ music.genre }}</span><span>{{ music.mood }}</span></div>
+        {% if music.description %}<p class="detail-description">{{ music.description|linebreaksbr }}</p>{% else %}<p class="detail-description muted-copy">No personal note attached to this track yet.</p>{% endif %}
+        <dl class="detail-facts"><div><dt>RELEASE YEAR</dt><dd>{{ music.release_year|default:"Not noted" }}</dd></div><div><dt>FAVORITE ERA</dt><dd>{{ music.favorite_era|default:"Not noted" }}</dd></div><div><dt>ADDED</dt><dd>{{ music.created_at|date:"M j, Y" }}</dd></div></dl>
+        <div class="form-actions detail-actions"><a class="button button-primary" href="{% url 'music_edit' music.pk %}">Edit track <span aria-hidden="true">↗</span></a><a class="button button-quiet" href="{% url 'music_delete' music.pk %}">Remove</a><a class="text-link" href="{% url 'music_library' %}">Back to library</a></div>
+    </div>
+</article>
+{% endblock %}

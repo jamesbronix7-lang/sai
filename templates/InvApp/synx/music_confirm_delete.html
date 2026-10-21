@@ -1,0 +1,15 @@
+{% extends "InvApp/synx/base.html" %}
+{% block title %}Remove {{ music.song_title }} · SYNX{% endblock %}
+{% block content %}
+<section class="confirm-wrap reveal">
+    <div class="confirm-record" aria-hidden="true"><span>♫</span></div>
+    <p class="eyebrow">A MOMENT BEFORE THE NEEDLE LIFTS</p>
+    <h1>Remove this <em>track?</em></h1>
+    <p class="confirm-copy"><strong>{{ music.song_title }}</strong> by {{ music.artist_name }} will be removed from your collection. This can't be undone.</p>
+    <form method="post" class="confirm-actions">
+        {% csrf_token %}
+        <a class="button button-quiet" href="{% url 'music_detail' music.pk %}">Keep this track</a>
+        <button class="button button-danger" type="submit">Remove track</button>
+    </form>
+</section>
+{% endblock %}

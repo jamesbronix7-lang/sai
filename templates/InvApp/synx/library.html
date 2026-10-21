@@ -1,0 +1,53 @@
+{% extends "InvApp/synx/base.html" %}
+{% block title %}Music library · SYNX{% endblock %}
+{% block content %}
+<section class="page-heading reveal">
+    <div>
+        <p class="eyebrow">EVERY NOTE, IN ITS PLACE</p>
+        <h1>The music <em>library.</em></h1>
+        <p class="intro-copy">A catalog of the songs that make up your sound.</p>
+    </div>
+    <a class="button button-primary" href="{% url 'music_create' %}"><span aria-hidden="true">＋</span> Add music</a>
+</section>
+
+<form class="filter-panel reveal" method="get" action="{% url 'music_library' %}">
+    <label class="search-field"><span aria-hidden="true">⌕</span><span class="visually-hidden">Search songs or artists</span><input type="search" name="q" value="{{ filters.q }}" placeholder="Search songs or artists…"></label>
+    <label><span class="visually-hidden">Filter by genre</span><select name="genre"><option value="">All genres</option>{% for item in genres %}<option value="{{ item }}" {% if filters.genre == item %}selected{% endif %}>{{ item }}</option>{% endfor %}</select></label>
+    <label><span class="visually-hidden">Filter by mood</span><select name="mood"><option value="">All moods</option>{% for item in moods %}<option value="{{ item }}" {% if filters.mood == item %}selected{% endif %}>{{ item }}</option>{% endfor %}</select></label>
+    <label><span class="visually-hidden">Filter by artist</span><select name="artist"><option value="">All artists</option>{% for item in artists %}<option value="{{ item }}" {% if filters.artist == item %}selected{% endif %}>{{ item }}</option>{% endfor %}</select></label>
+    <label><span class="visually-hidden">Filter by rating</span><select name="rating"><option value="">Any rating</option>{% for value in "12345" %}<option value="{{ value }}" {% if filters.rating == value %}selected{% endif %}>{{ value }} star{{ value|pluralize }}</option>{% endfor %}</select></label>
+    <label><span class="visually-hidden">Sort tracks</span><select name="sort"><option value="recent" {% if filters.sort == "recent" %}selected{% endif %}>Recently added</option><option value="title" {% if filters.sort == "title" %}selected{% endif %}>Title A–Z</option><option value="artist" {% if filters.sort == "artist" %}selected{% endif %}>Artist A–Z</option><option value="rating" {% if filters.sort == "rating" %}selected{% endif %}>Highest rated</option></select></label>
+    <button class="button button-primary filter-submit" type="submit">Apply</button>
+</form>
+
+<section class="library-panel reveal">
+    <div class="library-topline"><span>{{ page_obj.paginator.count }} track{{ page_obj.paginator.count|pluralize }}</span><span>YOUR COLLECTION · {% now "Y" %}</span></div>
+    {% if music_records %}
+    <div class="table-responsive">
+        <table class="music-table">
+            <thead><tr><th scope="col">TRACK</th><th scope="col">GENRE / MOOD</th><th scope="col">YEAR</th><th scope="col">RATING</th><th scope="col"><span class="visually-hidden">Actions</span></th></tr></thead>
+            <tbody>
+                {% for music in music_records %}
+                <tr>
+                    <td><a class="table-track" href="{% url 'music_detail' music.pk %}"><span class="mini-disc" aria-hidden="true">♫</span><span><strong>{{ music.song_title }}</strong><small>{{ music.artist_name }}</small></span></a></td>
+                    <td><span class="genre-pill">{{ music.genre }}</span><small class="table-sub">{{ music.mood }}</small></td>
+                    <td class="year-cell">{{ music.release_year|default:"—" }}</td>
+                    <td class="rating-cell" aria-label="{{ music.rating }} out of 5">{% for _ in "12345" %}{% if forloop.counter <= music.rating %}<span>★</span>{% else %}<span class="dim-star">★</span>{% endif %}{% endfor %}<small>{{ music.rating }}/5</small></td>
+                    <td class="action-cell"><a href="{% url 'music_edit' music.pk %}" aria-label="Edit {{ music.song_title }}">Edit</a><a href="{% url 'music_delete' music.pk %}" aria-label="Delete {{ music.song_title }}">Remove</a></td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <div class="empty-note library-empty"><span class="empty-glyph" aria-hidden="true">◉</span><h2>No tracks found.</h2><p>{% if filters.q or filters.genre or filters.mood or filters.artist or filters.rating %}Try clearing a filter, or add a new song to your collection.{% else %}Your library is still a blank record. Give it a first track.{% endif %}</p><a class="button button-primary" href="{% url 'music_create' %}">Add music <span aria-hidden="true">＋</span></a></div>
+    {% endif %}
+    {% if page_obj.has_other_pages %}
+    <nav class="pagination-row" aria-label="Music library pages">
+        {% if page_obj.has_previous %}<a href="?{% if querystring %}{{ querystring }}&amp;{% endif %}page={{ page_obj.previous_page_number }}">← Previous</a>{% else %}<span class="disabled">← Previous</span>{% endif %}
+        <span>Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
+        {% if page_obj.has_next %}<a href="?{% if querystring %}{{ querystring }}&amp;{% endif %}page={{ page_obj.next_page_number }}">Next →</a>{% else %}<span class="disabled">Next →</span>{% endif %}
+    </nav>
+    {% endif %}
+</section>
+{% endblock %}

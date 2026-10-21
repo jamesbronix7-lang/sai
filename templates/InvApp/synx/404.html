@@ -1,0 +1,41 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#080909">
+    <title>Record not found · SYNX</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'app_name/css/synx.css' %}">
+</head>
+<body class="not-found-body">
+    <canvas class="grainient-canvas" aria-hidden="true"></canvas>
+    <div class="page-grain" aria-hidden="true"></div>
+    <main class="not-found-shell">
+        <a class="brand-lockup" href="{% url 'login' %}" aria-label="SYNX sign in">
+            <span class="brand-mark" aria-hidden="true">S</span>
+            <span><canvas class="fuzzy-text fuzzy-brand" data-fuzzy-text="SYNX" data-font-size="100" data-color="#B1FF72" data-base-intensity="0.08" data-hover-intensity="0.3" data-fuzz-range="12" data-intro="false" role="img" aria-label="SYNX">SYNX</canvas><small>Your sound, your identity.</small></span>
+        </a>
+        <section class="not-found-panel">
+            <p class="eyebrow"><span class="room-live-dot"></span> SIGNAL LOST · RECORD NOT FOUND</p>
+            <canvas class="fuzzy-text fuzzy-404" data-fuzzy-text="404" data-font-size="clamp(8rem, 28vw, 19rem)" data-color="#a8f52a" data-base-intensity="0.2" data-hover-intensity="0.5" data-fuzz-range="30" data-slice-size="1" data-fps="60" data-intro="true" data-intro-duration="1400" role="img" aria-label="404">404</canvas>
+            <h1>This track isn’t <em>on the shelf.</em></h1>
+            <p class="not-found-copy">The page may have moved, or perhaps the needle never found this groove. Let’s get you back to familiar music.</p>
+            <div class="not-found-actions">
+                {% if request.user.is_authenticated %}
+                    <a class="button button-primary" href="{% url 'dashboard' %}">Return to my room <span aria-hidden="true">↗</span></a>
+                    <a class="not-found-link" href="{% url 'music_library' %}">Browse the library</a>
+                {% else %}
+                    <a class="button button-primary" href="{% url 'login' %}">Sign in to SYNX <span aria-hidden="true">↗</span></a>
+                {% endif %}
+            </div>
+            <span class="not-found-code">SYNX / NEEDLE POSITION 00:00 / TRY ANOTHER SIDE</span>
+        </section>
+    </main>
+    <script src="{% static 'app_name/js/fuzzy-text.js' %}"></script>
+    <script src="{% static 'app_name/js/grainient.js' %}"></script>
+</body>
+</html>
